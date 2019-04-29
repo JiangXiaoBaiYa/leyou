@@ -27,5 +27,4 @@ public class BasicExceptionAdvice {
         log.error(em.getMessage(),em);
         return ResponseEntity.status(em.getStatus()).body(new ExceptionResult(em));
     }
-
 }
