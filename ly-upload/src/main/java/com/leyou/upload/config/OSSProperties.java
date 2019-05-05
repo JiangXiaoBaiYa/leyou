@@ -1,6 +1,8 @@
 package com.leyou.upload.config;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +11,8 @@ import org.springframework.stereotype.Component;
  * @Date: 2019/5/5 11:16
  */
 @Data
+@Getter
+@Setter
 @Component
 @ConfigurationProperties("ly.oss")
 public class OSSProperties {
