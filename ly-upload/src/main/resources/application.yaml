@@ -1,0 +1,29 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: upload-service
+  servlet:
+    multipart:
+      max-file-size: 5MB #限制文件上传的大小
+
+
+#开始配置Eureka,将这个微服务注册进去Eyreka
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+  instance:
+    ip-address: 127.0.0.1
+    prefer-ip-address: true
+
+#配置阿里云oss图片管理
+ly:
+  oss:
+    accessKeyId: LTAIWrYWwCFEgbbV
+    accessKeySecret: YghpoqD8s4aIOw7iOdPg4td2Uh7Cpt
+    host: http://ly-image-j.oss-cn-shanghai.aliyuncs.com  # 访问oss的域名，很重要bucket + endpoint
+    endpoint: oss-cn-shanghai.aliyuncs.com # 你的服务的端点，不一定跟我一样
+    dir: "" # 保存到bucket的某个子目录
+    expireTime: 20 # 过期时间，单位是S
+    maxFileSize: 5242880 #文件大小限制，这里是5M
