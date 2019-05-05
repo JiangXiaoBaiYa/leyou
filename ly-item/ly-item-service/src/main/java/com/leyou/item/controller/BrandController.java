@@ -4,11 +4,11 @@ import com.leyou.common.vo.PageResult;
 import com.leyou.item.dto.BrandDTO;
 import com.leyou.item.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @Author: 姜光明
@@ -29,5 +29,17 @@ public class BrandController {
             @RequestParam(value = "sortBy",required = false)String sortBy,
             @RequestParam(value = "desc",defaultValue = "false")Boolean desc) {
         return ResponseEntity.ok(brandService.queryBrandByPage(page,rows,key,sortBy,desc));
+    }
+
+    /**
+     * 品牌新增
+     */
+    @PostMapping
+    public ResponseEntity<Void> saveBrand(/*@RequestParam("name")String name*/
+                                @RequestParam("cids")List<Long> cids,
+                                BrandDTO brand
+                                /*@RequestParam("letter")Character letter*/) {
+        brandService.saveBrand(brand, cids);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

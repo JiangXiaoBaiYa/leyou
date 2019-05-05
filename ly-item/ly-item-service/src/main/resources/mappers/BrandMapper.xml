@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leyou.item.mapper.BrandMapper">
+    <!--
+        select:查询的statement（声明），用来编写查询语句
+        id:语句的唯一标识
+        resultType：配置返回的结果集类型
+    parameterType：传递的参数类型，可以省略
+    -->
+
+    <insert id="insertCategoryBrand">
+        insert into tb_category_brand(category_id, brand_id)
+        <foreach collection="ids" open="values" separator="," item="id">
+            (#{id}, #{bid})
+        </foreach>
+    </insert>
+</mapper>
