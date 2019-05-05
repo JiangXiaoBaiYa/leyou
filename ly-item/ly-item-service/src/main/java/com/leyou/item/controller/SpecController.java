@@ -1,14 +1,15 @@
 package com.leyou.item.controller;
 
+import com.leyou.common.enums.ExceptionEnum;
+import com.leyou.common.exceptions.LyException;
 import com.leyou.item.dto.SpecGroupDTO;
 import com.leyou.item.dto.SpecParamDTO;
+import com.leyou.item.entity.SpecGroup;
 import com.leyou.item.service.SpecService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -43,4 +44,42 @@ public class SpecController {
     public ResponseEntity<List<SpecParamDTO>> querySpecParamsList(@RequestParam("gid") Long gid) {
         return ResponseEntity.ok(specService.querySpecParamsList(gid));
     }
+
+    /**
+     * 新增规格组
+     */
+    @PostMapping("group")
+    public ResponseEntity saveSpecGroup(@RequestBody SpecGroup specGroup) {
+        try {
+            specService.saveSpecGroup(specGroup);
+        } catch (Exception e) {
+            throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+        }
+        return ResponseEntity.ok(HttpStatus.CREATED);
+    }
+    /**
+     * 删除规格组
+     */
+    @DeleteMapping("group/{id}")
+    public ResponseEntity deleteSpecGroup(@PathVariable("id")Long id) {
+        try {
+            specService.deleteSpecGroup(id);
+        } catch (Exception e) {
+            throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
+        }
+        return ResponseEntity.ok(200);
+    }
+    /**
+     * 修改规格组
+     */
+    @PutMapping("group")
+    public ResponseEntity putSpecGroup(@RequestBody SpecGroup specGroup) {
+        try {
+            specService.putSpecGroup(specGroup);
+        } catch (Exception e) {
+            throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
+        }
+        return ResponseEntity.ok(200);
+    }
+
 }

@@ -11,6 +11,7 @@ import com.leyou.item.mapper.SpecGroupMapper;
 import com.leyou.item.mapper.SpecParamsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -63,5 +64,32 @@ public class SpecService {
             throw new LyException(ExceptionEnum.SPEC_NOT_FOUND);
         }
         return BeanHelper.copyWithCollection(specParams, SpecParamDTO.class);
+    }
+
+    /**
+     * 新增规格组
+     * @param specGroup
+     */
+    @Transactional
+    public void saveSpecGroup(SpecGroup specGroup) {
+        groupMapper.insertSelective(specGroup);
+    }
+
+    /**
+     * 删除规格组
+     * @param id
+     */
+    @Transactional
+    public void deleteSpecGroup(Long id) {
+        groupMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * 修改规格组
+     *
+     * @param specGroup
+     */
+    public void putSpecGroup(SpecGroup specGroup) {
+        groupMapper.updateByPrimaryKeySelective(specGroup);
     }
 }

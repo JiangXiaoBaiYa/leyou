@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,6 +81,7 @@ public class GoodsService {
             sb.deleteCharAt(sb.length() - 1);
             String categotyName = sb.toString();
             spuDTO.setCategoryName(categotyName);
+
 
             //开始给品牌名称设置值
             Brand brand = brandMapper.selectByPrimaryKey(spuDTO.getBrandId());
