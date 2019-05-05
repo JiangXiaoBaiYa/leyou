@@ -1,6 +1,7 @@
 package com.leyou.item.controller;
 
 import com.leyou.item.dto.SpecGroupDTO;
+import com.leyou.item.dto.SpecParamDTO;
 import com.leyou.item.service.SpecService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,5 +34,13 @@ public class SpecController {
         return ResponseEntity.ok(list);
     }
 
-
+    /**
+     * 根据规格组查询规格参数
+     * @param gid 规格组Id
+     * @return 规格参数
+     */
+    @GetMapping("params")
+    public ResponseEntity<List<SpecParamDTO>> querySpecParamsList(@RequestParam("gid") Long gid) {
+        return ResponseEntity.ok(specService.querySpecParamsList(gid));
+    }
 }

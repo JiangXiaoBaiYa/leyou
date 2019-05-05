@@ -22,3 +22,7 @@ mybatis:
   type-aliases-package: com.leyou.item.entity
   configuration:
     map-underscore-to-camel-case: true
+
+#全局修改关键词冲突问题
+mapper:
+  wrap-keyword: "`{0}`"

@@ -4,10 +4,14 @@ import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exceptions.LyException;
 import com.leyou.common.utils.BeanHelper;
 import com.leyou.item.dto.SpecGroupDTO;
+import com.leyou.item.dto.SpecParamDTO;
 import com.leyou.item.entity.SpecGroup;
+import com.leyou.item.entity.SpecParam;
 import com.leyou.item.mapper.SpecGroupMapper;
+import com.leyou.item.mapper.SpecParamsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -20,8 +24,11 @@ public class SpecService {
     @Autowired
     private SpecGroupMapper groupMapper;
 
+    @Autowired
+    private SpecParamsMapper paramsMapper;
+
     /**
-     *
+     *根据商品分类查询规格组
      * @param cid
      * @return
      */
@@ -37,5 +44,24 @@ public class SpecService {
         }
         List<SpecGroupDTO> dtos = BeanHelper.copyWithCollection(specGroups, SpecGroupDTO.class);
         return dtos;
+    }
+
+    /**
+     * 根据规格组查询规格参数
+     * @param gid
+     * @return
+     */
+    public List<SpecParamDTO> querySpecParamsList(Long gid) {
+        //构造查询条件
+        SpecParam specParam = new SpecParam();
+        specParam.setGroupId(gid);
+        //开始查询
+        List<SpecParam> specParams = paramsMapper.select(specParam);
+
+        //健壮性判断
+        if (CollectionUtils.isEmpty(specParams)) {
+            throw new LyException(ExceptionEnum.SPEC_NOT_FOUND);
+        }
+        return BeanHelper.copyWithCollection(specParams, SpecParamDTO.class);
     }
 }
