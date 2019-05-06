@@ -13,6 +13,7 @@ import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
@@ -37,6 +38,14 @@ public class GoodsService {
     @Autowired
     private SpuDetailMapper detailMapper;
 
+    /**
+     * 商品的分页查询
+     * @param page
+     * @param rows
+     * @param saleable
+     * @param key
+     * @return
+     */
     public PageResult<SpuDTO> querySpuByPage(Integer page, Integer rows, Boolean saleable, String key) {
         //构建分页
         PageHelper.startPage(page, rows);
@@ -68,6 +77,10 @@ public class GoodsService {
         return new PageResult<>(info.getTotal(),spuDTOS);
     }
 
+    /**
+     * 抽取出来的一个方法
+     * @param spuDTOS
+     */
     private void handleCategoryAndBrandName(List<SpuDTO> spuDTOS) {
         for (SpuDTO spuDTO : spuDTOS) {
             List<Long> ids = spuDTO.getCategoryIds();
@@ -94,6 +107,7 @@ public class GoodsService {
      * 商品新增
      * @param spuDTO
      */
+    @Transactional
     public void saveGoods(SpuDTO spuDTO) {
         //新增spu表
         Spu spu = BeanHelper.copyProperties(spuDTO, Spu.class);
@@ -115,5 +129,33 @@ public class GoodsService {
             sku.setSpuId(spu.getId());
             skuMapper.insertSelective(sku);
         }
+    }
+
+    /**
+     * 修改商品的上/下架
+     *
+     * @param id
+     * @param saleable
+     */
+    @Transactional
+    public void updateSaleable(Long id, Boolean saleable) {
+        //先修改spu表中的saleable字段
+        Spu spu = new Spu();
+        spu.setId(id);
+        spu.setSaleable(saleable);
+        int count = spuMapper.updateByPrimaryKeySelective(spu);
+        if (count != 1) {
+            throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
+        }
+        //再修改sku表中的enable字段
+        Sku sku = new Sku();
+        sku.setEnable(saleable);
+        //构建查询条件
+        Example example = new Example(Sku.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("spuId", id);
+        //参数一是怎么样修改，参数二是查询条件
+        skuMapper.updateByExampleSelective(sku, example);
+
     }
 }

@@ -20,6 +20,14 @@ public class GoodsController {
     @Autowired
     private GoodsService goodsService;
 
+    /**
+     * 商品的分页查询
+     * @param key
+     * @param saleable
+     * @param page
+     * @param rows
+     * @return
+     */
     @GetMapping("spu/page")
     public ResponseEntity<PageResult<SpuDTO>> querySpuByPage(
             @RequestParam(value = "key", required = false)String key,
@@ -37,5 +45,15 @@ public class GoodsController {
     public ResponseEntity<Void> saveGoods(@RequestBody SpuDTO spuDTO) {
         goodsService.saveGoods(spuDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    /**
+     * 修改商品的上/下架
+     */
+    @PutMapping("spu/saleable")
+    public ResponseEntity<Void> updateSaleable(@RequestParam("id") Long id,
+                                               @RequestParam("saleable") Boolean saleable) {
+        goodsService.updateSaleable(id, saleable);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
