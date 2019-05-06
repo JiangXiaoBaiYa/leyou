@@ -117,4 +117,19 @@ public class BrandService {
             throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
         }
     }
+
+    /**
+     * 通过分类id查询品牌
+     *
+     * @param cid
+     * @return
+     */
+    public List<BrandDTO> queryBrandByCategoryId(Long cid) {
+        List<Brand> brands = brandMapper.queryBrandByCategoryId(cid);
+        //健壮性判断
+        if (CollectionUtils.isEmpty(brands)) {
+            throw new LyException(ExceptionEnum.BRAND_NOT_FOUND);
+        }
+        return BeanHelper.copyWithCollection(brands, BrandDTO.class);
+    }
 }

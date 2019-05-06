@@ -61,4 +61,12 @@ public class BrandController {
         brandService.deleteByBrandId(brand);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    /**
+     * 品牌查询
+     */
+    @GetMapping("of/category")
+    public ResponseEntity<List<BrandDTO>> queryBrandByCategoryId(@RequestParam("id") Long cid) {
+        return ResponseEntity.ok(brandService.queryBrandByCategoryId(cid));
+    }
 }

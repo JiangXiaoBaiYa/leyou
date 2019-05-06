@@ -24,6 +24,10 @@ public class SpuDTO {
     private Date createTime;// 创建时间
     private String categoryName; // 商品分类名称拼接
     private String brandName;// 品牌名称
+    //新增两个属性，来帮助商品的保存
+    private List<SkuDTO> skus;
+    private SpuDetailDTO spuDetail;
+
 
     /**
      * 方便同时获取3级分类

@@ -7,12 +7,8 @@ import com.leyou.common.exceptions.LyException;
 import com.leyou.common.utils.BeanHelper;
 import com.leyou.common.vo.PageResult;
 import com.leyou.item.dto.SpuDTO;
-import com.leyou.item.entity.Brand;
-import com.leyou.item.entity.Category;
-import com.leyou.item.entity.Spu;
-import com.leyou.item.mapper.BrandMapper;
-import com.leyou.item.mapper.CategoryMapper;
-import com.leyou.item.mapper.SpuMapper;
+import com.leyou.item.entity.*;
+import com.leyou.item.mapper.*;
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +32,10 @@ public class GoodsService {
     private CategoryMapper categoryMapper;
     @Autowired
     private BrandMapper brandMapper;
+    @Autowired
+    private SkuMapper skuMapper;
+    @Autowired
+    private SpuDetailMapper detailMapper;
 
     public PageResult<SpuDTO> querySpuByPage(Integer page, Integer rows, Boolean saleable, String key) {
         //构建分页
@@ -90,4 +90,30 @@ public class GoodsService {
         }
     }
 
+    /**
+     * 商品新增
+     * @param spuDTO
+     */
+    public void saveGoods(SpuDTO spuDTO) {
+        //新增spu表
+        Spu spu = BeanHelper.copyProperties(spuDTO, Spu.class);
+        spu.setId(null);
+        spu.setSaleable(null);
+        int count = spuMapper.insertSelective(spu);
+        if (count != 1) {
+            throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+        }
+
+        //新增spuDetail表
+        SpuDetail spuDetail = BeanHelper.copyProperties(spuDTO.getSpuDetail(), SpuDetail.class);
+        spuDetail.setSpuId(spu.getId());
+        detailMapper.insertSelective(spuDetail);
+
+        //新增sku表
+        List<Sku> skus = BeanHelper.copyWithCollection(spuDTO.getSkus(), Sku.class);
+        for (Sku sku : skus) {
+            sku.setSpuId(spu.getId());
+            skuMapper.insertSelective(sku);
+        }
+    }
 }
