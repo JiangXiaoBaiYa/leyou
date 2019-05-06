@@ -2,6 +2,8 @@ package com.leyou.item.controller;
 
 import com.leyou.common.vo.PageResult;
 import com.leyou.item.dto.BrandDTO;
+import com.leyou.item.dto.CategoryDTO;
+import com.leyou.item.entity.Brand;
 import com.leyou.item.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,5 +43,22 @@ public class BrandController {
                                 /*@RequestParam("letter")Character letter*/) {
         brandService.saveBrand(brand, cids);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    /**
+     * 品牌修改
+     */
+    @PutMapping()
+    public ResponseEntity<List<CategoryDTO>> queryByBrandId(Brand brand,@RequestParam("cids")List<Long> ids) {
+        brandService.updateBrand(brand, ids);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+    /**
+     * 品牌删除
+     */
+    @DeleteMapping()
+    public ResponseEntity<Void> deleteByBrandId(Brand brand) {
+        brandService.deleteByBrandId(brand);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

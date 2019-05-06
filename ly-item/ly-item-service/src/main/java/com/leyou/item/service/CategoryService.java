@@ -34,4 +34,13 @@ public class CategoryService {
         return dtos;
 
     }
+
+    public List<CategoryDTO> queryByBrandId(Long brandId) {
+        List<Category> list = mapper.queryByBrandId(brandId);
+        //判断结果
+        if (CollectionUtils.isEmpty(list)) {
+            throw new LyException(ExceptionEnum.CATEGORY_NOT_FOUND);
+        }
+        return BeanHelper.copyWithCollection(list, CategoryDTO.class);
+    }
 }

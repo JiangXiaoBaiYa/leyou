@@ -22,7 +22,7 @@ ly:
   oss:
     accessKeyId: LTAIWrYWwCFEgbbV
     accessKeySecret: YghpoqD8s4aIOw7iOdPg4td2Uh7Cpt
-    host: http://ly-image-j.oss-cn-shanghai.aliyuncs.com  # 访问oss的域名，很重要bucket + endpoint
+    host: http://image.leyou.com  # 访问oss的域名，很重要bucket + endpoint
     endpoint: oss-cn-shanghai.aliyuncs.com # 你的服务的端点，不一定跟我一样
     dir: "" # 保存到bucket的某个子目录
     expireTime: 20 # 过期时间，单位是S

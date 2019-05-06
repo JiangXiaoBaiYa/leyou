@@ -80,4 +80,41 @@ public class BrandService {
             throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
         }
     }
+
+    @Transactional
+    public void updateBrand(Brand brand, List<Long> ids) {
+        //修改品牌
+        int count = brandMapper.updateByPrimaryKeySelective(brand);
+        if (count != 1) {
+            //跟新失败，抛出异常
+            throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
+        }
+
+        //删除中间表数据
+        brandMapper.deleteCategoryBrand(brand.getId());
+
+        //重新插入中间表
+        count = brandMapper.insertCategoryBrand(brand.getId(), ids);
+        if (count != ids.size()) {
+            //维护中间表失败
+            throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+        }
+    }
+
+    /**
+     *  品牌删除
+     * @param brand
+     */
+    @Transactional
+    public void deleteByBrandId(Brand brand) {
+        int i = brandMapper.deleteByPrimaryKey(brand);
+        if (i != 1) {
+            throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
+        }
+
+        int count = brandMapper.deleteCategoryBrand(brand.getId());
+        if (count == 0) {
+            throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
+        }
+    }
 }

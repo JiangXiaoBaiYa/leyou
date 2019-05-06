@@ -1,6 +1,7 @@
 package com.leyou.item.mapper;
 
 import com.leyou.item.entity.Brand;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.common.Mapper;
 
@@ -18,4 +19,7 @@ public interface BrandMapper extends Mapper<Brand> {
      * @return 新增条数
      */
     int insertCategoryBrand(@Param("bid") Long bid,@Param("ids") List<Long> cids);
+
+    @Delete("delete from tb_category_brand where brand_id = #{bid}")
+    int deleteCategoryBrand(@Param("bid") Long bid);
 }
