@@ -100,6 +100,9 @@ public class SpecService {
      * 在规格组下新增规格参数
      */
     public void saveSpecParams(SpecParamDTO specParamDTO) {
+        if (specParamDTO.getName() == null) {
+            throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+        }
         SpecParam specParam = BeanHelper.copyProperties(specParamDTO, SpecParam.class);
         specParam.setId(null);
         int count = paramsMapper.insertSelective(specParam);
@@ -116,6 +119,18 @@ public class SpecService {
         int count = paramsMapper.updateByPrimaryKeySelective(specParam);
         if (count != 1) {
             throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
+        }
+    }
+
+    /**
+     * 在规格组下删除规格参数
+     */
+    public void deleteSpecParams(Long id) {
+        SpecParam specParam = new SpecParam();
+        specParam.setId(id);
+        int count = paramsMapper.delete(specParam);
+        if (count != 1) {
+            throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
         }
     }
 }

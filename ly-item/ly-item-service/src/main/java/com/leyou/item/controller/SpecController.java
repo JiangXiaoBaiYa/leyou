@@ -99,4 +99,13 @@ public class SpecController {
         specService.updateSpecParams(specParamDTO);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    /**
+     * 在规格组下删除规格参数
+     */
+    @DeleteMapping("param/{id}")
+    public ResponseEntity<Void> deleteSpecParams(@PathVariable("id") Long id) {
+        specService.deleteSpecParams(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
