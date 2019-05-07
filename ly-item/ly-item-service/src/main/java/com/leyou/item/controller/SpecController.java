@@ -91,5 +91,12 @@ public class SpecController {
         specService.saveSpecParams(specParamDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
+    /**
+     * 在规格组下修改规格参数
+     */
+    @PutMapping("param")
+    public ResponseEntity<Void> updateSpecParams(@RequestBody SpecParamDTO specParamDTO) {
+        specService.updateSpecParams(specParamDTO);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

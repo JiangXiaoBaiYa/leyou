@@ -107,4 +107,15 @@ public class SpecService {
             throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
         }
     }
+
+    /**
+     * 在规格组下修改规格参数
+     */
+    public void updateSpecParams(SpecParamDTO specParamDTO) {
+        SpecParam specParam = BeanHelper.copyProperties(specParamDTO, SpecParam.class);
+        int count = paramsMapper.updateByPrimaryKeySelective(specParam);
+        if (count != 1) {
+            throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
+        }
+    }
 }
