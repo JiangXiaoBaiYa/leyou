@@ -83,6 +83,13 @@ public class SpecController {
         return ResponseEntity.ok(200);
     }
 
-
+    /**
+     * 在规格组下新增规格参数
+     */
+    @PostMapping("param")
+    public ResponseEntity<Void> saveSpecParams(@RequestBody SpecParamDTO specParamDTO) {
+        specService.saveSpecParams(specParamDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
 }

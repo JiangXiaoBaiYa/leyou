@@ -95,4 +95,16 @@ public class SpecService {
     public void putSpecGroup(SpecGroup specGroup) {
         groupMapper.updateByPrimaryKeySelective(specGroup);
     }
+
+    /**
+     * 在规格组下新增规格参数
+     */
+    public void saveSpecParams(SpecParamDTO specParamDTO) {
+        SpecParam specParam = BeanHelper.copyProperties(specParamDTO, SpecParam.class);
+        specParam.setId(null);
+        int count = paramsMapper.insertSelective(specParam);
+        if (count != 1) {
+            throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+        }
+    }
 }
