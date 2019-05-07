@@ -6,7 +6,9 @@ import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exceptions.LyException;
 import com.leyou.common.utils.BeanHelper;
 import com.leyou.common.vo.PageResult;
+import com.leyou.item.dto.SkuDTO;
 import com.leyou.item.dto.SpuDTO;
+import com.leyou.item.dto.SpuDetailDTO;
 import com.leyou.item.entity.*;
 import com.leyou.item.mapper.*;
 import org.apache.commons.lang.text.StrBuilder;
@@ -112,6 +114,7 @@ public class GoodsService {
         //新增spu表
         Spu spu = BeanHelper.copyProperties(spuDTO, Spu.class);
         spu.setId(null);
+        spu.setCreateTime(null);
         spu.setSaleable(null);
         int count = spuMapper.insertSelective(spu);
         if (count != 1) {
@@ -121,7 +124,10 @@ public class GoodsService {
         //新增spuDetail表
         SpuDetail spuDetail = BeanHelper.copyProperties(spuDTO.getSpuDetail(), SpuDetail.class);
         spuDetail.setSpuId(spu.getId());
-        detailMapper.insertSelective(spuDetail);
+       count = detailMapper.insertSelective(spuDetail);
+        if (count != 1) {
+            throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+        }
 
         //新增sku表
         List<Sku> skus = BeanHelper.copyWithCollection(spuDTO.getSkus(), Sku.class);
@@ -157,5 +163,56 @@ public class GoodsService {
         //参数一是怎么样修改，参数二是查询条件
         skuMapper.updateByExampleSelective(sku, example);
 
+    }
+
+    /**
+     * 商品的数据回显修改
+     *(暂时没用到此方法)
+     * @param id
+     * @return
+     */
+    public SpuDTO querySpuById(Long id) {
+        //查询spu表并把数据封装到spu中
+        Spu spu = new Spu();
+        spu.setId(id);
+        SpuDTO spuDTO = BeanHelper.copyProperties(spuMapper.selectOne(spu), SpuDTO.class);
+
+        //查询detail表并封装
+        SpuDetail spuDetail = new SpuDetail();
+        spuDetail.setSpuId(id);
+        spuDTO.setSpuDetail(BeanHelper.copyProperties(detailMapper.selectOne(spuDetail), SpuDetailDTO.class));
+
+        //查询sku表并封装
+        Sku sku = new Sku();
+        sku.setSpuId(id);
+        spuDTO.setSkus(BeanHelper.copyWithCollection(skuMapper.select(sku), SkuDTO.class));
+
+        return spuDTO;
+    }
+
+    /**
+     * 商品的数据回显之根据spuid查找sku
+     *
+     * @param id
+     * @return
+     */
+    public List<SkuDTO> querySkuById(Long id) {
+        //查询sku表并封装
+        Sku sku = new Sku();
+        sku.setSpuId(id);
+        return BeanHelper.copyWithCollection(skuMapper.select(sku), SkuDTO.class);
+    }
+
+    /**
+     * 商品的数据回显修改之根据spuid查找supDetail
+     *
+     * @param id
+     * @return
+     */
+    public SpuDetailDTO querySpuDetailById(Long id) {
+        //查询detail表
+        SpuDetail spuDetail = new SpuDetail();
+        spuDetail.setSpuId(id);
+        return BeanHelper.copyProperties(detailMapper.selectOne(spuDetail), SpuDetailDTO.class);
     }
 }
