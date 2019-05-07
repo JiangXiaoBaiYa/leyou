@@ -85,4 +85,13 @@ public class GoodsController {
         goodsService.updateGoods(spuDTO);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    /**
+     * 商品的删除（删spu，sku，spudetail表）
+     */
+    @DeleteMapping("spu/delete")
+    public ResponseEntity<Void> deleteGoodsBySpuid(@RequestParam("id") Long id) {
+        goodsService.deleteGoodsBySpuid(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

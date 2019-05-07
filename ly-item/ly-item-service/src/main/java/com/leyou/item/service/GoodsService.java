@@ -26,6 +26,7 @@ import java.util.List;
  * @Date: 2019/5/5 21:19
  */
 @Service
+@SuppressWarnings("all")
 public class GoodsService {
 
     @Autowired
@@ -247,6 +248,37 @@ public class GoodsService {
         for (Sku sku : skus) {
             sku.setSpuId(spuDTO.getId());
             skuMapper.insertSelective(sku);
+        }
+    }
+
+    /**
+     * 商品的删除（删spu，sku，spudetail表）
+     *
+     * @param id spuId
+     */
+    @Transactional
+    public void deleteGoodsBySpuid(Long id) {
+        //删除spu表
+        Spu spu = new Spu();
+        spu.setId(id);
+        int count = spuMapper.delete(spu);
+        if (count != 1) {
+            throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
+        }
+        //删除spuDetail表
+        SpuDetail spuDetail = new SpuDetail();
+        spuDetail.setSpuId(id);
+        count = detailMapper.deleteByPrimaryKey(spuDetail);
+        if (count != 1) {
+            throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
+        }
+        //删除sku表
+        Example example = new Example(Sku.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("spuId", id);
+        count = skuMapper.deleteByExample(example);
+        if (count == 0) {
+            throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
         }
     }
 }
