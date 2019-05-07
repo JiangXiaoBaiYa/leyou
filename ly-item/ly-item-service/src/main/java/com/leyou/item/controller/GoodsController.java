@@ -76,4 +76,13 @@ public class GoodsController {
     public ResponseEntity<List<SkuDTO>> querySkuById(@RequestParam("id")Long id) {
         return ResponseEntity.ok(goodsService.querySkuById(id));
     }
+
+    /**
+     * 商品信息回显后的修改
+     */
+    @PutMapping("goods")
+    public ResponseEntity<Void> updateGoods(@RequestBody SpuDTO spuDTO) {
+        goodsService.updateGoods(spuDTO);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

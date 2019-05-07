@@ -166,7 +166,7 @@ public class GoodsService {
     }
 
     /**
-     * 商品的数据回显修改
+     * 商品修改的数据回显
      *(暂时没用到此方法)
      * @param id
      * @return
@@ -214,5 +214,39 @@ public class GoodsService {
         SpuDetail spuDetail = new SpuDetail();
         spuDetail.setSpuId(id);
         return BeanHelper.copyProperties(detailMapper.selectOne(spuDetail), SpuDetailDTO.class);
+    }
+
+
+    /**
+     * 商品信息回显后的修改
+     */
+    @Transactional
+    public void updateGoods(SpuDTO spuDTO) {
+        //修改spu表
+        Spu spu = BeanHelper.copyProperties(spuDTO, Spu.class);
+        int count = spuMapper.updateByPrimaryKeySelective(spu);
+        if (count != 1) {
+            throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
+        }
+        //修改spuDetail表
+        SpuDetail spuDetail = BeanHelper.copyProperties(spuDTO.getSpuDetail(), SpuDetail.class);
+        count = detailMapper.updateByPrimaryKeySelective(spuDetail);
+        if (count != 1) {
+            throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
+        }
+        //删除sku表
+        Example example = new Example(Sku.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("spuId", spuDTO.getId());
+        count = skuMapper.deleteByExample(example);
+        if (count == 0) {
+            throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
+        }
+        //新增sku表
+        List<Sku> skus = BeanHelper.copyWithCollection(spuDTO.getSkus(), Sku.class);
+        for (Sku sku : skus) {
+            sku.setSpuId(spuDTO.getId());
+            skuMapper.insertSelective(sku);
+        }
     }
 }
