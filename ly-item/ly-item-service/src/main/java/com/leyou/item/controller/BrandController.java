@@ -63,10 +63,22 @@ public class BrandController {
     }
 
     /**
-     * 品牌查询
+     * 根据分类Id进行品牌查询
+     * @param cid 分类的id
+     * @return 品牌集合
      */
     @GetMapping("of/category")
     public ResponseEntity<List<BrandDTO>> queryBrandByCategoryId(@RequestParam("id") Long cid) {
         return ResponseEntity.ok(brandService.queryBrandByCategoryId(cid));
+    }
+
+    /**
+     * 根据品牌id进行品牌的查询
+     * @param id 品牌id
+     * @return 品牌
+     */
+    @GetMapping("{id}")
+    public ResponseEntity<BrandDTO> queryBrandByBrandId(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(brandService.queryBrandByBrandId(id));
     }
 }

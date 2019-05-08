@@ -132,4 +132,19 @@ public class BrandService {
         }
         return BeanHelper.copyWithCollection(brands, BrandDTO.class);
     }
+
+    /**
+     * 通过品牌id查询品牌
+     * @param id 品牌id
+     * @return 品牌
+     */
+    public BrandDTO queryBrandByBrandId(Long id) {
+        Brand brand = new Brand();
+        brand.setId(id);
+        Brand brand1 = brandMapper.selectByPrimaryKey(brand);
+        if (brand1 == null) {
+            throw new LyException(ExceptionEnum.BRAND_NOT_FOUND);
+        }
+        return BeanHelper.copyProperties( brand1,BrandDTO.class);
+    }
 }

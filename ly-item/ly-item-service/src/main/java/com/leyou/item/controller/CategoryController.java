@@ -20,9 +20,9 @@ public class CategoryController {
     private CategoryService service;
 
     /**
-     * 品牌查询
-     * @param pid
-     * @return
+     * 根据父Id品牌查询
+     * @param pid 父Id
+     * @return 分类集合
      */
     @GetMapping("of/parent")
     public ResponseEntity<List<CategoryDTO>> queryListByParentId(@RequestParam(value = "pid",defaultValue = "0") Long pid) {
@@ -36,6 +36,16 @@ public class CategoryController {
     @GetMapping("of/brand")
     public ResponseEntity<List<CategoryDTO>> queryByBrandId(@RequestParam(value = "id") Long id) {
         return ResponseEntity.ok(service.queryByBrandId(id));
+    }
+
+    /**
+     * 根据id的集合查询商品分类
+     * @param idlist 商品分类的id集合
+     * @return 分类集合
+     */
+    @GetMapping("list")
+    public ResponseEntity<List<CategoryDTO>> queryByIds(@RequestParam("ids") List<Long> idlist) {
+        return ResponseEntity.ok(service.queryByIds(idlist));
     }
 
 }

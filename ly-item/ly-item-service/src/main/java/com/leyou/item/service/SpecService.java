@@ -50,15 +50,17 @@ public class SpecService {
     /**
      * 根据规格组查询规格参数
      *
-     * @param cid
      * @param gid
+     * @param cid
+     * @param search
      * @return
      */
-    public List<SpecParamDTO> querySpecParamsList(Long gid,Long cid ) {
+    public List<SpecParamDTO> querySpecParamsList(Long gid, Long cid, Boolean search) {
         //构造查询条件
         SpecParam specParam = new SpecParam();
         specParam.setGroupId(gid);
         specParam.setCid(cid);
+        specParam.setSearching(search);
         //开始查询
         List<SpecParam> specParams = paramsMapper.select(specParam);
 

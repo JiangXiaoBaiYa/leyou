@@ -36,14 +36,17 @@ public class SpecController {
     }
 
     /**
-     * 根据规格组查询规格参数(商品新增时又加一个新条件cid)
-     * @param gid 规格组Id
-     * @return 规格参数
+     * 查询规格参数
+     * @param gid 组id
+     * @param cid 分类id
+     * @param searching 是否用于搜索
+     * @return 规格组集合
      */
     @GetMapping("params")
     public ResponseEntity<List<SpecParamDTO>> querySpecParamsList(@RequestParam(value = "gid",required = false) Long gid,
-                                                                  @RequestParam(value = "cid",required = false)Long cid) {
-        return ResponseEntity.ok(specService.querySpecParamsList(gid,cid));
+                                                                  @RequestParam(value = "cid",required = false)Long cid,
+                                                                  @RequestParam(value = "searching",required = false)Boolean searching) {
+        return ResponseEntity.ok(specService.querySpecParamsList(gid,cid,searching));
     }
 
     /**
