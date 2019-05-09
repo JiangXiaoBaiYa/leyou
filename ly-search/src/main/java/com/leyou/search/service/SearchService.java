@@ -1,12 +1,27 @@
 package com.leyou.search.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.leyou.common.enums.ExceptionEnum;
+import com.leyou.common.exceptions.LyException;
+import com.leyou.common.utils.BeanHelper;
 import com.leyou.common.utils.JsonUtils;
+import com.leyou.common.vo.PageResult;
 import com.leyou.item.ItemClient;
 import com.leyou.item.dto.*;
+import com.leyou.search.dto.GoodsDTO;
+import com.leyou.search.dto.SearchRequest;
 import com.leyou.search.pojo.Goods;
+import com.leyou.search.repository.GoodsRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.index.query.Operator;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -21,6 +36,11 @@ public class SearchService {
 
     @Autowired
     private ItemClient itemClient;
+
+    @Autowired
+    private GoodsRepository goodsRepository;
+    @Autowired
+    private ElasticsearchTemplate esTemplate;
 
     /**
      * 把一个Spu转成一个Goods对象
@@ -70,7 +90,7 @@ public class SearchService {
         //4.2 获取规格参数的值,来自于spuDetail
         SpuDetailDTO spuDetailDTO = itemClient.querySpuDetailById(spu.getId());
         //4.2.1通用规格参数值
-        Map<String, Object> genericSpec = JsonUtils.toMap(spuDetailDTO.getGenericSpec(), String.class, Object.class);
+        Map<Long, Object> genericSpec = JsonUtils.toMap(spuDetailDTO.getGenericSpec(), Long.class, Object.class);
         //4.2.2特有规格参数值
         Map<Long, List<String>> specSpec = JsonUtils.nativeRead(spuDetailDTO.getSpecialSpec(), new TypeReference<Map<Long, List<String>>>() {
         });
@@ -106,7 +126,7 @@ public class SearchService {
         goods.setAll(all); // 查询的搜索字段all  分类名+spu的名称+品牌名
         goods.setSkus(skuJson); // 查询所有的sku集合的josn格式
         goods.setPrice(skuPrice); // 查询所有sku的价格集合
-        goods.setSpecs(null); //TODO 获取所有的规格参数
+        goods.setSpecs(specs); // 获取所有的规格参数
         return goods;
     }
 
@@ -146,5 +166,43 @@ public class SearchService {
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    /**
+     * 搜索
+     *
+     * @param searchRequest
+     * @return
+     */
+    public PageResult<GoodsDTO> search(SearchRequest searchRequest) {
+        //0.健壮性判断
+        if (StringUtils.isBlank(searchRequest.getKey())) {
+            throw new LyException(ExceptionEnum.INVALID_PARAM_ERROR);
+        }
+        //1.构建原生搜索查询构建器
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+        //2.装载搜索策略
+        queryBuilder.withQuery(QueryBuilders.matchQuery("all", searchRequest.getKey()).operator(Operator.AND));
+        //3.过滤下要显示的字段,控制字段数量
+        queryBuilder.withSourceFilter(new FetchSourceFilter(new String[]{"id", "subTitle", "skus"}, null));
+        //4.分页条件的构建
+        int page = searchRequest.getPage() - 1;
+        int size = searchRequest.getSize();
+        queryBuilder.withPageable(PageRequest.of(page, size));
+
+        //5.搜索结果
+        AggregatedPage<Goods> result = esTemplate.queryForPage(queryBuilder.build(), Goods.class);
+        //6.解析结果
+
+        long total = result.getTotalElements();  //查询到的总结果数
+        int totalPage = result.getTotalPages();  //查询到的总页数
+        List<Goods> list = result.getContent();  //查询到的结果集
+        //转换成页面需要的DTO
+        List<GoodsDTO> goodsDTOS = BeanHelper.copyWithCollection(list, GoodsDTO.class);
+
+        //7封装到页面结果集
+        PageResult<GoodsDTO> goodsPageResult = new PageResult<>(total, totalPage, goodsDTOS);
+
+        return goodsPageResult;
     }
 }
