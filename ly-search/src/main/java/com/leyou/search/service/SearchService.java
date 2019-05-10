@@ -17,6 +17,7 @@ import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.*;
 import org.elasticsearch.search.aggregations.bucket.terms.LongTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
@@ -262,7 +263,56 @@ public class SearchService {
         filterList.put("分类", categoryDTOS);
         filterList.put("品牌", brandDTOS);
 
+        //       规格参数处理
+        if (ids != null && ids.size() == 1) {
+            handleSpecAgg(ids.get(0), filterList,searchRequest);
+        }
 
         return filterList;
+    }
+
+    /**
+     * 过滤规格参数
+     * @param cid
+     * @param filterList
+     * @param searchRequest
+     */
+    private void handleSpecAgg(Long cid, Map<String, List<?>> filterList, SearchRequest searchRequest) {
+        //1.根据分类id查询这个分类下需要搜索的规格参数
+        List<SpecParamDTO> specParams = itemClient.querySpecParamsList(null, cid, true);
+        //2.创建原生搜索构建器
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+
+        //3.添加构造条件
+        queryBuilder.withQuery(QueryBuilders.matchQuery("all", searchRequest.getKey()).operator(Operator.AND));
+        //3.2减少hits的数据，每页显示 1个
+        queryBuilder.withPageable(PageRequest.of(0, 1));
+        //3.1因为只要聚合结果,减少source,显示空的source，提高查询效率
+        queryBuilder.withSourceFilter(new FetchSourceFilterBuilder().build());
+
+
+        //4.添加聚合条件,对查询出的规格参数聚合
+        for (SpecParamDTO specParam : specParams) {
+            //获取param的name作为聚合名称
+            String name = specParam.getName();
+            queryBuilder.addAggregation(AggregationBuilders.terms(name).field("specs." + name+"."));
+        }
+
+        //5.查询数据
+        AggregatedPage<Goods> result = esTemplate.queryForPage(queryBuilder.build(), Goods.class);
+        Aggregations aggregations = result.getAggregations();
+
+        //6.解析聚合结果
+        for (SpecParamDTO specParam : specParams) {
+            String name = specParam.getName();
+            StringTerms terms = aggregations.get(name);
+            // 获取聚合结果，注意，规格聚合的结果 直接是字符串，不用做特殊处理
+            List<String> spec = terms.getBuckets()
+                    .stream()
+                    .map(StringTerms.Bucket::getKeyAsString)
+                    .collect(Collectors.toList());
+            //解析聚合结果，放到filterList中
+            filterList.put(name, spec);
+        }
     }
 }
