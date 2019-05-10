@@ -69,5 +69,14 @@ public interface ItemClient {
     @GetMapping("spec/params")
     List<SpecParamDTO> querySpecParamsList(@RequestParam(value = "gid", required = false) Long gid,
                                                                   @RequestParam(value = "cid", required = false) Long cid,
-                                                                  @RequestParam(value = "searching", required = false) Boolean searching);
+                                           @RequestParam(value = "searching", required = false) Boolean searching);
+
+    /**
+     * 根据品牌id批量查询品牌
+     *
+     * @param idlist 品牌id的集合
+     * @return 品牌的集合
+     */
+    @GetMapping("brand/list")
+    List<BrandDTO> queryBrandByIds(@RequestParam("ids") List<Long> idlist);
 }

@@ -15,12 +15,14 @@ import com.leyou.search.repository.GoodsRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.aggregations.*;
+import org.elasticsearch.search.aggregations.bucket.terms.LongTerms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
@@ -201,8 +203,66 @@ public class SearchService {
         List<GoodsDTO> goodsDTOS = BeanHelper.copyWithCollection(list, GoodsDTO.class);
 
         //7封装到页面结果集
-        PageResult<GoodsDTO> goodsPageResult = new PageResult<>(total, totalPage, goodsDTOS);
 
-        return goodsPageResult;
+        return new PageResult<>(total, totalPage, goodsDTOS);
+    }
+
+    /**
+     * 查询过滤项
+     *
+     * @param searchRequest
+     * @return
+     */
+    public Map<String, List<?>> queryFilters(SearchRequest searchRequest) {
+        //1.创建过滤项集合
+        Map<String, List<?>> filterList = new LinkedHashMap<>();
+
+        //2.创建原生搜索构造器
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+
+        //3.添加构造条件
+        queryBuilder.withQuery(QueryBuilders.matchQuery("all", searchRequest.getKey()).operator(Operator.AND));
+        //3.1因为只要聚合结果,减少source,显示空的source，提高查询效率
+        queryBuilder.withSourceFilter(new FetchSourceFilterBuilder().build());
+        //3.2减少hits的数据，每页显示 1个
+        queryBuilder.withPageable(PageRequest.of(0, 1));
+
+        //4.添加聚合条件
+        //4.1分类的聚合
+        queryBuilder.addAggregation(AggregationBuilders.terms("categoryAgg").field("categoryId"));
+        //4.2品牌的聚合
+        queryBuilder.addAggregation(AggregationBuilders.terms("brandAgg").field("brandId"));
+
+        //5.查询聚合结果
+        AggregatedPage<Goods> result = esTemplate.queryForPage(queryBuilder.build(), Goods.class);
+
+        //6.解析聚合结果(获取所有的聚合结果)
+        Aggregations aggregations = result.getAggregations();
+        //6.1解析分类的聚合获取List<Long>所有的ids
+        LongTerms cTerms = aggregations.get("categoryAgg");
+        //6.1.1解析buckets
+        List<Long> ids = cTerms.getBuckets().stream()
+                .map(LongTerms.Bucket::getKeyAsNumber)
+                .map(Number::longValue)
+                .collect(Collectors.toList());
+        //6.1.2根据ids查询分类
+        List<CategoryDTO> categoryDTOS = itemClient.queryByIds(ids);
+
+        //6.2解析品牌的聚合获取List<Long>所有的ids
+        LongTerms bTerms = aggregations.get("brandAgg");
+        //6.2.1解析buckets
+        List<Long> longs = bTerms.getBuckets().stream()
+                .map(LongTerms.Bucket::getKeyAsNumber)
+                .map(Number::longValue)
+                .collect(Collectors.toList());
+        //6.2.2根据ids查询品牌
+        List<BrandDTO> brandDTOS = itemClient.queryBrandByIds(longs);
+
+        //6.3放入过滤项集合中并返回
+        filterList.put("分类", categoryDTOS);
+        filterList.put("品牌", brandDTOS);
+
+
+        return filterList;
     }
 }

@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @Author: 姜光明
  * @Date: 2019/5/9 10:21
@@ -28,5 +31,15 @@ public class SearchController {
     @PostMapping("page")
     public ResponseEntity<PageResult<GoodsDTO>> search(@RequestBody SearchRequest searchRequest) {
         return ResponseEntity.ok(searchService.search(searchRequest));
+    }
+
+    /**
+     * 查询过滤项
+     * @param searchRequest
+     * @return
+     */
+    @PostMapping("filter")
+    public ResponseEntity<Map<String, List<?>>> queryFilters(@RequestBody SearchRequest searchRequest) {
+        return ResponseEntity.ok(searchService.queryFilters(searchRequest));
     }
 }

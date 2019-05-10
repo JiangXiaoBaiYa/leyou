@@ -147,4 +147,15 @@ public class BrandService {
         }
         return BeanHelper.copyProperties( brand1,BrandDTO.class);
     }
+
+    /**
+     * 根据品牌id批量查找品牌
+     *
+     * @param idlist
+     * @return
+     */
+    public List<BrandDTO> queryBrandByIds(List<Long> idlist) {
+        List<Brand> brands = brandMapper.selectByIdList(idlist);
+        return BeanHelper.copyWithCollection(brands, BrandDTO.class);
+    }
 }
