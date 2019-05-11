@@ -13,7 +13,9 @@ import com.leyou.search.dto.SearchRequest;
 import com.leyou.search.pojo.Goods;
 import com.leyou.search.repository.GoodsRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.Operator;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.*;
 import org.elasticsearch.search.aggregations.bucket.terms.LongTerms;
@@ -26,6 +28,7 @@ import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -185,7 +188,7 @@ public class SearchService {
         //1.构建原生搜索查询构建器
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
         //2.装载搜索策略
-        queryBuilder.withQuery(QueryBuilders.matchQuery("all", searchRequest.getKey()).operator(Operator.AND));
+        queryBuilder.withQuery(basicQuery(searchRequest));
         //3.过滤下要显示的字段,控制字段数量
         queryBuilder.withSourceFilter(new FetchSourceFilter(new String[]{"id", "subTitle", "skus"}, null));
         //4.分页条件的构建
@@ -208,6 +211,34 @@ public class SearchService {
         return new PageResult<>(total, totalPage, goodsDTOS);
     }
 
+    private QueryBuilder basicQuery(SearchRequest searchRequest) {
+        //构建布尔查询
+        BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+        //构建基本的match查询
+        queryBuilder.must(QueryBuilders.matchQuery("all", searchRequest.getKey()).operator(Operator.AND));
+        //构建过滤条件
+        Map<String, String> filter = searchRequest.getFilter();
+        if (!CollectionUtils.isEmpty(filter)) {
+            for (Map.Entry<String, String> entry : filter.entrySet()) {
+                //获取过滤条件的key
+                String key = entry.getKey();
+                //规格参数的key要做前缀specs
+                if ("分类".equals(key)) {
+                    key = "categoryId";
+                } else if ("品牌".equals(key)) {
+                    key = "brandId";
+                } else {
+                    key = "specs." + key;
+                }
+                //value
+                String value = entry.getValue();
+                //添加过滤条件
+                queryBuilder.filter(QueryBuilders.termQuery(key, value));
+            }
+        }
+        return queryBuilder;
+    }
+
     /**
      * 查询过滤项
      *
@@ -222,7 +253,7 @@ public class SearchService {
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
 
         //3.添加构造条件
-        queryBuilder.withQuery(QueryBuilders.matchQuery("all", searchRequest.getKey()).operator(Operator.AND));
+        queryBuilder.withQuery(basicQuery(searchRequest));
         //3.1因为只要聚合结果,减少source,显示空的source，提高查询效率
         queryBuilder.withSourceFilter(new FetchSourceFilterBuilder().build());
         //3.2减少hits的数据，每页显示 1个
@@ -284,7 +315,7 @@ public class SearchService {
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
 
         //3.添加构造条件
-        queryBuilder.withQuery(QueryBuilders.matchQuery("all", searchRequest.getKey()).operator(Operator.AND));
+        queryBuilder.withQuery(basicQuery(searchRequest));
         //3.2减少hits的数据，每页显示 1个
         queryBuilder.withPageable(PageRequest.of(0, 1));
         //3.1因为只要聚合结果,减少source,显示空的source，提高查询效率
@@ -295,7 +326,7 @@ public class SearchService {
         for (SpecParamDTO specParam : specParams) {
             //获取param的name作为聚合名称
             String name = specParam.getName();
-            queryBuilder.addAggregation(AggregationBuilders.terms(name).field("specs." + name+"."));
+            queryBuilder.addAggregation(AggregationBuilders.terms(name).field("specs." + name));
         }
 
         //5.查询数据

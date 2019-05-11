@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -55,6 +56,29 @@ public class CategoryService {
         if (CollectionUtils.isEmpty(list)) {
             throw new LyException(ExceptionEnum.CATEGORY_NOT_FOUND);
         }
+        return BeanHelper.copyWithCollection(list, CategoryDTO.class);
+    }
+
+    /**
+     * 根据3级分类id，查询1-3级的分类
+     *
+     * @return category集合
+     * @param id
+     */
+    public List<CategoryDTO> queryAllByCid3(Long id) {
+        Category c3 = mapper.selectByPrimaryKey(id);
+        if (c3 == null) {
+            throw new LyException(ExceptionEnum.CATEGORY_NOT_FOUND);
+        }
+        Category c2 = mapper.selectByPrimaryKey(c3.getParentId());
+        if (c2 == null) {
+            throw new LyException(ExceptionEnum.CATEGORY_NOT_FOUND);
+        }
+        Category c1 = mapper.selectByPrimaryKey(c2.getParentId());
+        if (c1 == null) {
+            throw new LyException(ExceptionEnum.CATEGORY_NOT_FOUND);
+        }
+        List<Category> list = Arrays.asList(c1, c2, c3);
         return BeanHelper.copyWithCollection(list, CategoryDTO.class);
     }
 }

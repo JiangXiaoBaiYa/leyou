@@ -48,4 +48,14 @@ public class CategoryController {
         return ResponseEntity.ok(service.queryByIds(idlist));
     }
 
+    /**
+     * 根据3级分类id，查询1-3级的分类
+     * @param id
+     * @return
+     */
+    @GetMapping("/levels")
+    public ResponseEntity<List<CategoryDTO>> queryAllByCid3(@RequestParam("id") Long id) {
+        return ResponseEntity.ok(service.queryAllByCid3(id));
+    }
+
 }
