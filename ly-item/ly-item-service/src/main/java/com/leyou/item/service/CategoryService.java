@@ -5,7 +5,9 @@ import com.leyou.common.exceptions.LyException;
 import com.leyou.common.utils.BeanHelper;
 import com.leyou.item.dto.CategoryDTO;
 import com.leyou.item.entity.Category;
+import com.leyou.item.entity.Spu;
 import com.leyou.item.mapper.CategoryMapper;
+import com.leyou.item.mapper.SpuMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -21,6 +23,9 @@ import java.util.List;
 public class CategoryService {
     @Autowired
     private CategoryMapper mapper;
+
+    @Autowired
+    private SpuMapper spuMapper;
 
     public List<CategoryDTO> queryListByParent(Long pid) {
         Category category = new Category();
@@ -81,4 +86,5 @@ public class CategoryService {
         List<Category> list = Arrays.asList(c1, c2, c3);
         return BeanHelper.copyWithCollection(list, CategoryDTO.class);
     }
+
 }

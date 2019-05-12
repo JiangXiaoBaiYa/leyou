@@ -2,6 +2,7 @@ package com.leyou.item.controller;
 
 import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exceptions.LyException;
+import com.leyou.item.dto.CategoryDTO;
 import com.leyou.item.dto.SpecGroupDTO;
 import com.leyou.item.dto.SpecParamDTO;
 import com.leyou.item.entity.SpecGroup;
@@ -26,27 +27,29 @@ public class SpecController {
 
     /**
      * 根据商品分类查询规格组
+     *
      * @param cid 商品分类id
      * @return 规格组集合
      */
     @GetMapping("groups/of/category")
-    public ResponseEntity<List<SpecGroupDTO>> querySpecGroupList(@RequestParam("id")Long cid) {
+    public ResponseEntity<List<SpecGroupDTO>> querySpecGroupList(@RequestParam("id") Long cid) {
         List<SpecGroupDTO> list = specService.querySpecGroupList(cid);
         return ResponseEntity.ok(list);
     }
 
     /**
      * 查询规格参数
-     * @param gid 组id
-     * @param cid 分类id
+     *
+     * @param gid       组id
+     * @param cid       分类id
      * @param searching 是否用于搜索
      * @return 规格组集合
      */
     @GetMapping("params")
-    public ResponseEntity<List<SpecParamDTO>> querySpecParamsList(@RequestParam(value = "gid",required = false) Long gid,
-                                                                  @RequestParam(value = "cid",required = false)Long cid,
-                                                                  @RequestParam(value = "searching",required = false)Boolean searching) {
-        return ResponseEntity.ok(specService.querySpecParamsList(gid,cid,searching));
+    public ResponseEntity<List<SpecParamDTO>> querySpecParamsList(@RequestParam(value = "gid", required = false) Long gid,
+                                                                  @RequestParam(value = "cid", required = false) Long cid,
+                                                                  @RequestParam(value = "searching", required = false) Boolean searching) {
+        return ResponseEntity.ok(specService.querySpecParamsList(gid, cid, searching));
     }
 
     /**
@@ -61,11 +64,12 @@ public class SpecController {
         }
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
+
     /**
      * 删除规格组
      */
     @DeleteMapping("group/{id}")
-    public ResponseEntity deleteSpecGroup(@PathVariable("id")Long id) {
+    public ResponseEntity deleteSpecGroup(@PathVariable("id") Long id) {
         try {
             specService.deleteSpecGroup(id);
         } catch (Exception e) {
@@ -73,6 +77,7 @@ public class SpecController {
         }
         return ResponseEntity.ok(200);
     }
+
     /**
      * 修改规格组
      */
@@ -94,6 +99,7 @@ public class SpecController {
         specService.saveSpecParams(specParamDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
     /**
      * 在规格组下修改规格参数
      */
@@ -110,5 +116,15 @@ public class SpecController {
     public ResponseEntity<Void> deleteSpecParams(@PathVariable("id") Long id) {
         specService.deleteSpecParams(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    /**
+     * 查询规格参数组及组内参数
+     * @param id 商品分类id
+     * @return 规格组以及组内参数
+     */
+    @GetMapping("of/category")
+    public ResponseEntity<List<SpecGroupDTO>> querySpecsByCid(@RequestParam("id") Long id) {
+        return ResponseEntity.ok(specService.querySpecsByCid(id));
     }
 }

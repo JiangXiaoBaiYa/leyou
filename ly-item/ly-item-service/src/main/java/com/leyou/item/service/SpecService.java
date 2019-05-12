@@ -14,7 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Author: 姜光明
@@ -27,6 +30,7 @@ public class SpecService {
 
     @Autowired
     private SpecParamsMapper paramsMapper;
+
 
     /**
      *根据商品分类查询规格组
@@ -134,5 +138,22 @@ public class SpecService {
         if (count != 1) {
             throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
         }
+    }
+
+
+    public List<SpecGroupDTO> querySpecsByCid(Long id) {
+        //查询规格组
+        List<SpecGroupDTO> specGroupDTOS = querySpecGroupList(id);
+        //查询规格参数
+        List<SpecParamDTO> params = querySpecParamsList(null, id, null);
+
+        //把参数分组, key是groupId，值是group下的所有Param的集合
+        Map<Long, List<SpecParamDTO>> map = params.stream().collect(Collectors.groupingBy(SpecParamDTO::getGroupId));
+
+        //把分好的组set到Group中
+        for (SpecGroupDTO groupDTO : specGroupDTOS) {
+            groupDTO.setParams(map.get(groupDTO.getId()));
+        }
+        return specGroupDTOS;
     }
 }

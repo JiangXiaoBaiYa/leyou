@@ -281,4 +281,23 @@ public class GoodsService {
             throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
         }
     }
+
+    /**
+     * 根据spu的id查询spu
+     *
+     * @param id
+     * @return
+     */
+    public SpuDTO querySpuBySpuid(Long id) {
+        //查询spu
+        Spu spu = spuMapper.selectByPrimaryKey(id);
+        SpuDTO spuDTO = BeanHelper.copyProperties(spu, SpuDTO.class);
+
+        //查询spuDetail
+        spuDTO.setSpuDetail(querySpuDetailById(id));
+
+        //查询skus
+        spuDTO.setSkus(querySkuById(id));
+        return spuDTO;
+    }
 }
