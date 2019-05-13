@@ -91,4 +91,19 @@ public class PageService {
         }
     }
 
+    /**
+     * 删除Nginx的静态页面
+     *
+     * @param spuid spuId
+     */
+    public void deleteItemHtml(Long spuid) {
+        File file = new File(itemDir, spuid + ".html");
+        if (file.exists()) {
+            boolean delete = file.delete();
+            if (!delete) {
+                log.error("【静态页服务】静态页删除失败，商品id：{}", spuid);
+                throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
+            }
+        }
+    }
 }

@@ -346,4 +346,26 @@ public class SearchService {
             filterList.put(name, spec);
         }
     }
+
+    /**
+     * 新增索引
+     *
+     * @param id
+     */
+    public void createIndex(Long id) {
+        //查询spu
+        SpuDTO spu = itemClient.querySpuBySpuid(id);
+        //构建goods对象
+        Goods goods = this.BuildGoods(spu);
+        //保存数据到索引库
+        goodsRepository.save(goods);
+    }
+
+    /**
+     * 删除索引
+     * @param id
+     */
+    public void deleteById(Long id) {
+        goodsRepository.deleteById(id);
+    }
 }

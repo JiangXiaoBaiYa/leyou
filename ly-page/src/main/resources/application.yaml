@@ -3,6 +3,11 @@ spring:
     cache: false
   application:
     name: page-service
+  rabbitmq:
+    host: 192.168.122.128
+    username: leyou
+    password: leyou
+    virtual-host: /leyou
 server:
   port: 8084
 eureka:
@@ -15,5 +20,5 @@ eureka:
 
 ly:
   static:
-    itemDir: D:\develop\nginx-1.14.0\html
+    itemDir: D:\develop\nginx-1.14.0\html\item
     item: item

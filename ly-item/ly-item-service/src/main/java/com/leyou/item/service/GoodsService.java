@@ -2,6 +2,7 @@ package com.leyou.item.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.leyou.common.constants.MQConstants;
 import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exceptions.LyException;
 import com.leyou.common.utils.BeanHelper;
@@ -13,6 +14,7 @@ import com.leyou.item.entity.*;
 import com.leyou.item.mapper.*;
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -138,6 +140,9 @@ public class GoodsService {
         }
     }
 
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
     /**
      * 修改商品的上/下架
      *
@@ -164,6 +169,9 @@ public class GoodsService {
         //参数一是怎么样修改，参数二是查询条件
         skuMapper.updateByExampleSelective(sku, example);
 
+        //发送mq消息
+        String key = saleable ? MQConstants.RoutingKey.ITEM_UP_KEY : MQConstants.RoutingKey.ITEM_DOWN_KEY;
+        amqpTemplate.convertAndSend(key,id);
     }
 
     /**
