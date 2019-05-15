@@ -70,4 +70,15 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    /**
+     * 根据用户名和密码查询用户
+     * @param username 用户名
+     * @param password 密码
+     * @return 用户DTO
+     */
+    @GetMapping("/query")
+    public ResponseEntity<UserDTO> queryUserByUsernameAndPassword(@RequestParam("username")String username,@RequestParam("password")String password) {
+        return ResponseEntity.ok(userService.queryUserByUsernameAndPassword(username, password));
+    }
 }

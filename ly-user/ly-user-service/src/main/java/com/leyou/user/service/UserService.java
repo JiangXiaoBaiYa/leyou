@@ -95,4 +95,22 @@ public class UserService {
         }
 
     }
+
+    public UserDTO queryUserByUsernameAndPassword(String username, String password) {
+        //1.根据用户名查询(因username有索引，而password没有索引，一起查的话索引失效，表会全表扫描，性能下降)
+        User u = new User();
+        u.setUsername(username);
+        User user = userMapper.selectOne(u);
+        //2.判断用户是否存在
+        if (user == null) {
+            //用户名错误
+            throw new LyException(ExceptionEnum.INVALID_USERNAME_PASSWORD);
+        }
+        boolean b = passwordEncoder.matches(password, user.getPassword());
+        if (!b) {
+            //密码错误
+            throw new LyException(ExceptionEnum.INVALID_USERNAME_PASSWORD);
+        }
+        return BeanHelper.copyProperties(user, UserDTO.class);
+    }
 }
