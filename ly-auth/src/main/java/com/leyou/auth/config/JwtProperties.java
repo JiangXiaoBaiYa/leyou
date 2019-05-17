@@ -32,6 +32,7 @@ public class JwtProperties implements InitializingBean {
         private int expire;  //token过期时常
         private String cookieName; //存放token的cookie名称
         private String cookieDomain;//存放token的cookie的domain
+        private int minRefreshInterval; //cookie的最小刷新间隔
     }
 
     /**

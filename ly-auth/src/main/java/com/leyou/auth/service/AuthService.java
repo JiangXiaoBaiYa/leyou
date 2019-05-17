@@ -9,16 +9,20 @@ import com.leyou.common.exceptions.LyException;
 import com.leyou.common.utils.CookieUtils;
 import com.leyou.item.dto.UserDTO;
 import com.leyou.user.client.UserClient;
+import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 
 /**
  * @Author: 姜光明
  * @Date: 2019/5/17 8:58
  */
+@Slf4j
 @Service
 public class AuthService {
 
@@ -68,8 +72,33 @@ public class AuthService {
             String token = CookieUtils.getCookieValue(request, prop.getUser().getCookieName());
             //获取token 信息
             Payload<UserInfo> payload = JwtUtils.getInfoFromToken(token, prop.getPublicKey(), UserInfo.class);
+
+            //获取过期时间
+            Date expiration = payload.getExpiration();
+            //获取刷新时间
+            DateTime refreshTime = new DateTime(expiration.getTime()).minusMinutes(prop.getUser().getMinRefreshInterval());
+            //判断是否已经过了刷新时间
+            if (refreshTime.isBefore(System.currentTimeMillis())) {
+                //如果过了刷新时间，则生成新token
+                token = JwtUtils.generateTokenExpireInMinutes(payload.getUserInfo(), prop.getPrivateKey(), prop.getUser().getExpire());
+                //写入cookie
+                CookieUtils.newCookieBuilder()
+                        //response，用于写cookie
+                        .response(response)
+                        //保证安全防止XSS攻击，不允许JS操作cookie
+                        .httpOnly(true)
+                        //设置domain
+                        .domain(prop.getUser().getCookieDomain())
+                        //设置cookie的名称和值
+                        .name(prop.getUser().getCookieName())
+                        //写入cookie
+                        .build();
+            }
+
+
             return payload.getUserInfo();
         } catch (Exception e) {
+            log.error("用户信息认证失败", e);
             // 抛出异常，证明token无效，直接返回401
             throw new LyException(ExceptionEnum.UNAUTHORIZED);
         }

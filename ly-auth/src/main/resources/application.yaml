@@ -20,3 +20,4 @@ ly:
       expire: 30 #token过期时间，单位分钟
       cookieName: LY_TOKEN  #cookie的名称
       cookieDomain: leyou.com  #cookie的域,可以让leyou.com下的所有二级域名共享cookie
+      minRefreshInterval: 15 #最小刷新间隔，单位分钟
