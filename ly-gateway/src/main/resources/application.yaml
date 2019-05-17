@@ -53,3 +53,15 @@ ly:
     filterPath: "/**"  #因为yml文件对待*的处理特殊，所以加上引号
     allowed-headers:
       - "*"
+  jwt:
+    pubKeyPath: D:\workspace2\ssh\id_rsa.pub # 公钥地址
+    user:
+      cookieName: LY_TOKEN  #cookie名称
+  filter:
+    allowPaths:
+      - /api/auth/login
+      - /api/search
+      - /api/user/register
+      - /api/user/check
+      - /api/user/code
+      - /api/item
