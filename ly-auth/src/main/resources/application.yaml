@@ -16,3 +16,7 @@ ly:
   jwt:
     pubKeyPath: D:\workspace2\ssh\id_rsa.pub # 公钥地址
     priKeyPath: D:\workspace2\ssh\id_rsa # 私钥地址
+    user: #特殊标记，这些虽然与JWT有关，但却是用户登录相关属性，因此这样来配置
+      expire: 30 #token过期时间，单位分钟
+      cookieName: LY_TOKEN  #cookie的名称
+      cookieDomain: leyou.com  #cookie的域,可以让leyou.com下的所有二级域名共享cookie

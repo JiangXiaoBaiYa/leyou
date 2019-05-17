@@ -11,7 +11,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 /**
- * Cookie 工具类:实现cookie的读和写
+ * Cookie 工具类
  */
 @Slf4j
 public final class CookieUtils {
@@ -57,8 +57,16 @@ public final class CookieUtils {
         return retValue;
     }
 
-    public static CookieBuilder newBuilder() {
+    public static CookieBuilder newCookieBuilder() {
         return new CookieBuilder();
+    }
+
+    public static void deleteCookie(String cookieName, String domain,HttpServletResponse response) {
+        Cookie cookie = new Cookie(cookieName, "");
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        cookie.setDomain(domain);
+        response.addCookie(cookie);
     }
 
     public static class CookieBuilder {
@@ -128,7 +136,7 @@ public final class CookieUtils {
                     value = URLEncoder.encode(value, charset);
                 }
                 Cookie cookie = new Cookie(name, value);
-                if (maxAge != null && maxAge > 0)
+                if (maxAge != null && maxAge >= 0)
                     cookie.setMaxAge(maxAge);
 
                 if(StringUtils.isNotBlank(domain)){

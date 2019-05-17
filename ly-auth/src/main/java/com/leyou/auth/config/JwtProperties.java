@@ -25,6 +25,15 @@ public class JwtProperties implements InitializingBean {
 
     private PublicKey publicKey;
     private PrivateKey privateKey;
+
+    private UserTokenPropperties user = new UserTokenPropperties(); //用户token相关属性
+    @Data
+    public class UserTokenPropperties{
+        private int expire;  //token过期时常
+        private String cookieName; //存放token的cookie名称
+        private String cookieDomain;//存放token的cookie的domain
+    }
+
     /**
      * 在bean注入到springIOC容器后立马加载此方法
      * @throws Exception
