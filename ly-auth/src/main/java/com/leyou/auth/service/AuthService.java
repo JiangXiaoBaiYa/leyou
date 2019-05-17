@@ -12,11 +12,13 @@ import com.leyou.user.client.UserClient;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: 姜光明
@@ -73,6 +75,14 @@ public class AuthService {
             //获取token 信息
             Payload<UserInfo> payload = JwtUtils.getInfoFromToken(token, prop.getPublicKey(), UserInfo.class);
 
+            //获取token的id，校验黑名单
+            String id = payload.getId();
+            Boolean boo = redisTemplate.hasKey(id);
+            if (boo != null && boo) {
+                //抛出异常，证明token无效，直接返回401
+                throw new LyException(ExceptionEnum.UNAUTHORIZED);
+            }
+
             //获取过期时间
             Date expiration = payload.getExpiration();
             //获取刷新时间
@@ -102,5 +112,24 @@ public class AuthService {
             // 抛出异常，证明token无效，直接返回401
             throw new LyException(ExceptionEnum.UNAUTHORIZED);
         }
+    }
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        //获取token
+        String token = CookieUtils.getCookieValue(request, prop.getUser().getCookieName());
+        //解析token
+        Payload<UserInfo> payload = JwtUtils.getInfoFromToken(token, prop.getPublicKey(), UserInfo.class);
+        //获取id和有效期剩余时长
+        String id = payload.getId();
+        long time = payload.getExpiration().getTime()-System.currentTimeMillis();
+        //写入redis，剩余时间超过5秒以上才写
+        if (time > 5000) {
+            redisTemplate.opsForValue().set(id,"1",time, TimeUnit.MICROSECONDS);
+        }
+        //删除cookie
+        CookieUtils.deleteCookie(prop.getUser().getCookieName(), prop.getUser().getCookieDomain(), response);
     }
 }

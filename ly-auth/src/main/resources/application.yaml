@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: auth-service
+  redis:
+    host: 192.168.122.128
 eureka:
   client:
     service-url:
