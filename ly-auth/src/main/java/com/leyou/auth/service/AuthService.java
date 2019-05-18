@@ -8,6 +8,9 @@ import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exceptions.LyException;
 import com.leyou.common.utils.CookieUtils;
 import com.leyou.item.dto.UserDTO;
+import com.leyou.privilege.client.ApplicationClient;
+import com.leyou.privilege.dto.ApplicationDTO;
+import com.leyou.privilege.entity.ApplicationInfo;
 import com.leyou.user.client.UserClient;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
@@ -131,5 +134,23 @@ public class AuthService {
         }
         //删除cookie
         CookieUtils.deleteCookie(prop.getUser().getCookieName(), prop.getUser().getCookieDomain(), response);
+    }
+
+    @Autowired
+    private ApplicationClient applicationClient;
+
+    public String authenticate(Long id, String secret) {
+        try {
+            //校验id和secret是否正确
+            ApplicationDTO appDTO = applicationClient.queryByAppIdAndSecret(id, secret);
+            //生成JWT
+            ApplicationInfo appinfo = new ApplicationInfo();
+            appinfo.setId(appDTO.getId());
+            appinfo.setServiceName(appDTO.getServiceName());
+            return JwtUtils.generateTokenExpireInSeconds(appinfo, prop.getPrivateKey(), prop.getApp().getExpire());
+        } catch (Exception e) {
+            log.error("【授权中心】验证服务id和secret出错。", e);
+            throw new LyException(ExceptionEnum.INVALID_SERVER_ID_SECRET);
+        }
     }
 }

@@ -22,9 +22,15 @@ public class JwtProperties implements InitializingBean {
     private String pubKeyPath; //公钥地址
     private String priKeyPath;  //私钥地址
 
+    private AppTokenProperties app = new AppTokenProperties();
 
-    private PublicKey publicKey;
-    private PrivateKey privateKey;
+    @Data
+    public class AppTokenProperties {
+        private int expire;
+    }
+
+    private PublicKey publicKey; //公钥对象
+    private PrivateKey privateKey; //私钥对象
 
     private UserTokenPropperties user = new UserTokenPropperties(); //用户token相关属性
     @Data

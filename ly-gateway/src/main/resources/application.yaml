@@ -60,6 +60,7 @@ ly:
   filter:
     allowPaths:
       - /api/auth/login
+      - /api/auth/authentication
       - /api/search
       - /api/user/register
       - /api/user/check

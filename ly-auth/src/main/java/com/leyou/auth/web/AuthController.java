@@ -58,4 +58,15 @@ public class AuthController {
         authService.logout(request, response);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    /**
+     * 微服务认证并申请令牌
+     * @param id 服务id
+     * @param secret 密码
+     * @return token令牌
+     */
+    @GetMapping("authentication")
+    public ResponseEntity<String> authenticate(@RequestParam("id") Long id, @RequestParam("secret") String secret) {
+        return ResponseEntity.ok(authService.authenticate(id, secret));
+    }
 }
