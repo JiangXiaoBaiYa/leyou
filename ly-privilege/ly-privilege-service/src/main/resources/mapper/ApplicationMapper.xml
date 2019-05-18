@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+   mapper标签:配置各类声明
+   namespace：名称空间，由于映射文件可能有多个，为了防止crud语句的唯一标识被重复，需要设置空间名称。
+ -->
+
+<mapper namespace="com.leyou.privilege.mapper.ApplicationMapper">
+
+    <insert id="insertApplicationPrivilege" >
+        insert into tb_application_privilege (service_id, target_id)
+        <foreach collection="idList" open="VALUES" separator="," item="id">
+            (#{serviceId},#{id})
+        </foreach>
+    </insert>
+</mapper>
