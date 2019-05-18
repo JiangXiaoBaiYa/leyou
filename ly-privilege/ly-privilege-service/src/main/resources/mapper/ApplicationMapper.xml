@@ -15,4 +15,8 @@
             (#{serviceId},#{id})
         </foreach>
     </insert>
+
+    <select id="queryTargetIdList" resultType="java.lang.Long">
+    SELECT target_id FROM tb_application_privilege WHERE service_id = #{id}
+</select>
 </mapper>

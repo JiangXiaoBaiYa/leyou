@@ -14,4 +14,6 @@ import java.util.List;
  */
 public interface ApplicationMapper extends Mapper<ApplicationInfo>, IdListMapper<Long, ApplicationInfo> {
     int insertApplicationPrivilege(@Param("serviceId") Long serviceId, @Param("idList")List<Long> idList);
+
+    List<Long> queryTargetIdList(Long id);
 }

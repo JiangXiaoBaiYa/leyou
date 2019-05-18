@@ -42,4 +42,23 @@ public class ApplicationService {
             throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
         }
     }
+
+    public ApplicationDTO queryByAppIdAndSecret(Long id, String secret) {
+        //查询应用信息
+        ApplicationInfo info = applicationMapper.selectByPrimaryKey(id);
+        if (info == null) {
+            throw new LyException(ExceptionEnum.APPLICATION_NOT_FOUND);
+        }
+        //校验密钥
+        if (!passwordEncoder.matches(secret, info.getSecret())) {
+            throw new LyException(ExceptionEnum.INVALID_SERVER_ID_SECRET);
+        }
+
+        //查询id集合
+        List<Long> idList = applicationMapper.queryTargetIdList(id);
+        //封装数据
+        ApplicationDTO dto = BeanHelper.copyProperties(info, ApplicationDTO.class);
+        dto.setTargetIdList(idList);
+        return dto;
+    }
 }

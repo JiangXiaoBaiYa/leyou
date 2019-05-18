@@ -5,9 +5,7 @@ import com.leyou.privilege.service.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author: 姜光明
@@ -28,5 +26,16 @@ public class ApplicationController {
     public ResponseEntity<Void> saveApplication(ApplicationDTO applicationDTO) {
         applicationService.save(applicationDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    /**
+     * 根据id和密码查询服务信息
+     * @param id 服务id
+     * @param secret 服务密钥
+     * @return 服务
+     */
+    @GetMapping("query")
+    public ResponseEntity<ApplicationDTO> queryByAppIdAndSecret(@RequestParam("id") Long id, @RequestParam("secret") String secret) {
+        return ResponseEntity.ok(applicationService.queryByAppIdAndSecret(id, secret));
     }
 }
