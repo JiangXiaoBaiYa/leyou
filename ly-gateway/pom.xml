@@ -32,6 +32,11 @@
             <artifactId>ly-common</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+<!--        定义一个Feign的客户端，用来调用授权中心的授权认证接口-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

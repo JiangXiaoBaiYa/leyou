@@ -27,6 +27,8 @@ public class JwtProperties implements InitializingBean {
     @Data
     public class AppTokenProperties {
         private int expire;
+        private Long id;
+        private String secret;
     }
 
     private PublicKey publicKey; //公钥对象

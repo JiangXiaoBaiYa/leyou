@@ -17,9 +17,24 @@ import java.security.PublicKey;
 @ConfigurationProperties(prefix = "ly.jwt")
 public class JwtProperties implements InitializingBean {
     private String pubKeyPath;  //公钥地址
-    private PublicKey publicKey;
+    private PublicKey publicKey; //公钥对象
 
-    private UserTokenProperties user = new UserTokenProperties();
+    private UserTokenProperties user = new UserTokenProperties();  //用户token相关属性
+
+    private PrivilegeTokenProperties app = new PrivilegeTokenProperties();  //服务token相关属性
+
+
+
+    @Data
+    public class UserTokenProperties{
+        private String cookieName; //存放token的cookie名称
+    }
+
+    @Data
+    public class PrivilegeTokenProperties{
+        private Long id;  //服务id
+        private String secret;   //服务密钥
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -30,11 +45,5 @@ public class JwtProperties implements InitializingBean {
             log.error("初始化公钥失败！", e);
             throw new RuntimeException(e);
         }
-
-    }
-
-    @Data
-    public class UserTokenProperties{
-        private String cookieName; //存放token的cookie名称
     }
 }

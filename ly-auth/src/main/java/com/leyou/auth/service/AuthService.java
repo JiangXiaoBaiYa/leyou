@@ -138,7 +138,12 @@ public class AuthService {
 
     @Autowired
     private ApplicationClient applicationClient;
-
+    /**
+     * 微服务认证并申请令牌
+     * @param id 服务id
+     * @param secret 密码
+     * @return token令牌
+     */
     public String authenticate(Long id, String secret) {
         try {
             //校验id和secret是否正确

@@ -57,6 +57,9 @@ ly:
     pubKeyPath: D:\workspace2\ssh\id_rsa.pub # 公钥地址
     user:
       cookieName: LY_TOKEN  #cookie名称
+    app:
+      id: 7 # 服务id
+      secret: ${spring.application.name}
   filter:
     allowPaths:
       - /api/auth/login

@@ -25,3 +25,5 @@ ly:
       minRefreshInterval: 15 #最小刷新间隔，单位分钟
     app:
       expire: 90000  #微服务认证申请token的有效时间,秒
+      id: 10  #自己的id
+      secret: ${spring.application.name} #自己的服务密钥
