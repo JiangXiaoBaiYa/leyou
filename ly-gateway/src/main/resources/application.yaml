@@ -60,6 +60,7 @@ ly:
     app:
       id: 7 # 服务id
       secret: ${spring.application.name}
+      headerName: privilege_token
   filter:
     allowPaths:
       - /api/auth/login

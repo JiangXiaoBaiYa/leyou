@@ -12,8 +12,8 @@ import java.util.List;
  * @Author: 姜光明
  * @Date: 2019/5/18 9:49
  */
-public interface ApplicationMapper extends Mapper<ApplicationInfo>, IdListMapper<Long, ApplicationInfo> {
+public interface ApplicationMapper extends Mapper<ApplicationInfo>, IdListMapper<ApplicationInfo,Long> {
     int insertApplicationPrivilege(@Param("serviceId") Long serviceId, @Param("idList")List<Long> idList);
 
-    List<Long> queryTargetIdList(Long id);
+    List<Long> queryTargetIdList(@Param("id") Long id);
 }

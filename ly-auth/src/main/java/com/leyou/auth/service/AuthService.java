@@ -10,7 +10,6 @@ import com.leyou.common.utils.CookieUtils;
 import com.leyou.item.dto.UserDTO;
 import com.leyou.privilege.client.ApplicationClient;
 import com.leyou.privilege.dto.ApplicationDTO;
-import com.leyou.privilege.entity.ApplicationInfo;
 import com.leyou.user.client.UserClient;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
@@ -149,7 +148,7 @@ public class AuthService {
             //校验id和secret是否正确
             ApplicationDTO appDTO = applicationClient.queryByAppIdAndSecret(id, secret);
             //生成JWT
-            ApplicationInfo appinfo = new ApplicationInfo();
+            ApplicationDTO appinfo = new ApplicationDTO();
             appinfo.setId(appDTO.getId());
             appinfo.setServiceName(appDTO.getServiceName());
             return JwtUtils.generateTokenExpireInSeconds(appinfo, prop.getPrivateKey(), prop.getApp().getExpire());

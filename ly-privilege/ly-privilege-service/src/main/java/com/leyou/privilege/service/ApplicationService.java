@@ -9,6 +9,7 @@ import com.leyou.privilege.entity.ApplicationInfo;
 import com.leyou.privilege.mapper.ApplicationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * @Author: 姜光明
  * @Date: 2019/5/18 9:39
  */
+@Service
 public class ApplicationService {
 
     @Autowired

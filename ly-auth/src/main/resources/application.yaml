@@ -27,3 +27,8 @@ ly:
       expire: 90000  #微服务认证申请token的有效时间,秒
       id: 10  #自己的id
       secret: ${spring.application.name} #自己的服务密钥
+      headerName: privilege_token
+  encoder:
+    crypt:
+      secret: ${random.uuid}
+      strength: 10

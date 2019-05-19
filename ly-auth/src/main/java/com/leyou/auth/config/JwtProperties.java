@@ -26,9 +26,10 @@ public class JwtProperties implements InitializingBean {
 
     @Data
     public class AppTokenProperties {
-        private int expire;
-        private Long id;
-        private String secret;
+        private int expire;  //服务认证token的过期时常
+        private Long id;  //服务id
+        private String secret;  //服务密钥
+        private String headerName;  //存放服务认证token的请求头
     }
 
     private PublicKey publicKey; //公钥对象

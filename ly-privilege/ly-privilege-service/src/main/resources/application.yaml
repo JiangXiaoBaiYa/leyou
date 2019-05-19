@@ -21,7 +21,7 @@ eureka:
     #mybatis配置
 mybatis:
   type-aliases-package: com.leyou.privilege.entity
-  mapper-locations: mappers/*.xml
+  mapper-locations: mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
 
@@ -37,3 +37,9 @@ ly:
     crypt:
       secret: ${random.uuid}
       strength: 10
+  jwt:
+    pubKeyPath: D:\workspace2\ssh\id_rsa.pub # 公钥地址
+    privilege:
+      id: 9
+      secret: ${spring.application.name}
+      headerName: privilege_token

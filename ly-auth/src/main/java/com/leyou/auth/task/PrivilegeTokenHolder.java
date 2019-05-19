@@ -2,7 +2,7 @@ package com.leyou.auth.task;
 
 import com.leyou.auth.config.JwtProperties;
 import com.leyou.common.auth.utils.JwtUtils;
-import com.leyou.privilege.entity.ApplicationInfo;
+import com.leyou.privilege.dto.ApplicationDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,7 +30,7 @@ public class PrivilegeTokenHolder {
     public void loadToken() {
         try {
             //向ly-auth发起请求，获取JWT
-            ApplicationInfo appInfo = new ApplicationInfo();
+            ApplicationDTO appInfo = new ApplicationDTO();
             appInfo.setId(prop.getApp().getId());
             token = JwtUtils.generateTokenExpireInSeconds(appInfo, prop.getPrivateKey(), prop.getApp().getExpire());
             log.info("【网关】定时获取token成功");
