@@ -20,6 +20,10 @@ zuul:
     user-service: /user/** # 将用户微服务映射到/user/**
     auth-service: /auth/** # 将授权中心微服务映射到/auth/**
     cart-service: /cart/** # 将购物车微服务映射到/cart/**
+    order-service:  # 将购物车微服务映射到/cart/**
+      path: /order/**
+      serviceId: order-service
+      strip-prefix: false
   sensitive-headers: #覆盖敏感头信息
 
 

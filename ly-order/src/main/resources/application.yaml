@@ -1,0 +1,23 @@
+server:
+  port: 8090
+spring:
+  application:
+    name: order-service
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://127.0.0.1:3306/leyou
+  jackson:
+    default-property-inclusion: non_null
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  type-aliases-package: com.leyou.order.entity
