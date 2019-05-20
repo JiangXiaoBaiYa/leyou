@@ -12,3 +12,8 @@ eureka:
   instance:
     ip-address: 127.0.0.1
     prefer-ip-address: true
+
+
+logging:
+  level:
+    com.leyou: trace
