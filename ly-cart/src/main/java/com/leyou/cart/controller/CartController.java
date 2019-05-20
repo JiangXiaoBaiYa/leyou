@@ -43,10 +43,29 @@ public class CartController {
         return ResponseEntity.ok(carts);
     }
 
+    /**
+     * 修改购物车中商品数量
+     * @param skuId
+     * @param num
+     * @return
+     */
     @PutMapping
     public ResponseEntity<Void> updateNum(@RequestParam("id") Long skuId,
                                           @RequestParam("num") Integer num) {
         cartService.updateNum(skuId, num);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    /**
+     * 删除购物车中商品
+     * @param skuId
+     * @return
+     */
+    @DeleteMapping("{skuId}")
+    public ResponseEntity<Void> deleteCart(@PathVariable("skuId") Long skuId) {
+        cartService.deleteCart(skuId);
+        return ResponseEntity.ok().build();
+    }
+
+
 }

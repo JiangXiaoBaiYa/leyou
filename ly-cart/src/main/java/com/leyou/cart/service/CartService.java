@@ -92,4 +92,13 @@ public class CartService {
         //写回redis
         hashOps.put(hashKey, JsonUtils.toString(c));
     }
+
+    /**
+     * 删除购物车中的某个商品
+     * @param skuId
+     */
+    public void deleteCart(Long skuId) {
+        String key = KEY_PREFIX + UserHolder.getUser();
+        redisTemplate.boundHashOps(key).delete(skuId.toString());
+    }
 }
