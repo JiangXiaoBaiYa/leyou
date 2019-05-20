@@ -19,6 +19,7 @@ zuul:
     search-service: /search/** # 将搜索微服务映射到/search/**
     user-service: /user/** # 将用户微服务映射到/user/**
     auth-service: /auth/** # 将授权中心微服务映射到/auth/**
+    cart-service: /cart/** # 将购物车微服务映射到/cart/**
   sensitive-headers: #覆盖敏感头信息
 
 
@@ -57,6 +58,7 @@ ly:
     pubKeyPath: D:\workspace2\ssh\id_rsa.pub # 公钥地址
     user:
       cookieName: LY_TOKEN  #cookie名称
+      headerName: user_info #用户的header名称
     app:
       id: 7 # 服务id
       secret: ${spring.application.name}

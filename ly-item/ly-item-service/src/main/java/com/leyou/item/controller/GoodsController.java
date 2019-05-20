@@ -104,4 +104,15 @@ public class GoodsController {
     public ResponseEntity<SpuDTO> querySpuBySpuid(@PathVariable("id") Long id) {
         return ResponseEntity.ok(goodsService.querySpuBySpuid(id));
     }
+
+    /**
+     * 根据ids批量查询sku
+     * @param ids sku id的集合
+     * @return sku集合
+     */
+    @GetMapping("sku/list")
+    public ResponseEntity<List<SkuDTO>> querySkuByIds(@RequestParam("ids") List<Long> ids) {
+
+        return ResponseEntity.ok(goodsService.querySkuByIds(ids));
+    }
 }

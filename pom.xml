@@ -22,6 +22,7 @@
         <module>ly-user</module>
         <module>ly-auth</module>
         <module>ly-privilege</module>
+        <module>ly-cart</module>
     </modules>
     <packaging>pom</packaging>
 

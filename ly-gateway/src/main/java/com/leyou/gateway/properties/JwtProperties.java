@@ -28,6 +28,7 @@ public class JwtProperties implements InitializingBean {
     @Data
     public class UserTokenProperties{
         private String cookieName; //存放token的cookie名称
+        private String headerName; //存放用户信息的header名称
     }
 
     @Data

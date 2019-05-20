@@ -96,6 +96,9 @@ public class AuthFilter extends ZuulFilter {
             //TODO 判断权限，此处暂时空置，等待权限服务完成后补充
             log.info("【网关】用户{},角色{}。访问服务{} : {}，", user.getUsername(), role, method, path);
 
+            //保存用户id到请求头中
+            context.addZuulRequestHeader(jwtProp.getUser().getHeaderName(),user.getId().toString());
+
         } catch (Exception e) {
             //校验出现异常，返回403
             context.setSendZuulResponse(false);
