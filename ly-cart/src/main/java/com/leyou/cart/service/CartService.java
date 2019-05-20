@@ -32,6 +32,15 @@ public class CartService {
         String key = KEY_PREFIX + uid;
         //获取hash操作的对象，并绑定用户id
         BoundHashOperations<String, String, String> hashOps = redisTemplate.boundHashOps(key);
+        addCartInRedis(cart, hashOps);
+    }
+
+    /**
+     * 把单商品新增的代码封装为一个方法
+     * @param cart
+     * @param hashOps
+     */
+    private void addCartInRedis(Cart cart, BoundHashOperations<String, String, String> hashOps) {
         //获取商品id，作为hashKey
         String hashKey = cart.getSkuId().toString();
         //获取数量
@@ -66,6 +75,7 @@ public class CartService {
             throw new LyException(ExceptionEnum.CARTS_NOT_FOUND);
         }
 
+        //TODO 不理解
         List<String> carts = hashOps.values();
         return carts.stream()
                 .map(json -> JsonUtils.toBean(json, Cart.class))
@@ -100,5 +110,15 @@ public class CartService {
     public void deleteCart(Long skuId) {
         String key = KEY_PREFIX + UserHolder.getUser();
         redisTemplate.boundHashOps(key).delete(skuId.toString());
+    }
+
+    public void addCartList(List<Cart> cartList) {
+        //获取当前用户
+        String key = KEY_PREFIX + UserHolder.getUser();
+        //获取hash操作的对象，并绑定用户id
+        BoundHashOperations<String, String, String> hashOps = redisTemplate.boundHashOps(key);
+        for (Cart cart : cartList) {
+            addCartInRedis(cart,hashOps);
+        }
     }
 }

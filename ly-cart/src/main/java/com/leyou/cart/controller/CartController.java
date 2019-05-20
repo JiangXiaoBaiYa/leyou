@@ -67,5 +67,15 @@ public class CartController {
         return ResponseEntity.ok().build();
     }
 
-
+    /**
+     * 批量添加购物车
+     * 登陆后购物车合并
+     * @param cartList
+     * @return
+     */
+    @PostMapping("list")
+    public ResponseEntity<Void> addCartList(@RequestBody List<Cart> cartList) {
+        cartService.addCartList(cartList);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 }
