@@ -1,9 +1,9 @@
 package com.leyou.item.controller;
 
 import com.leyou.common.vo.PageResult;
-import com.leyou.item.dto.SkuDTO;
-import com.leyou.item.dto.SpuDTO;
-import com.leyou.item.dto.SpuDetailDTO;
+import com.leyou.user.dto.SkuDTO;
+import com.leyou.user.dto.SpuDTO;
+import com.leyou.user.dto.SpuDetailDTO;
 import com.leyou.item.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -114,5 +115,15 @@ public class GoodsController {
     public ResponseEntity<List<SkuDTO>> querySkuByIds(@RequestParam("ids") List<Long> ids) {
 
         return ResponseEntity.ok(goodsService.querySkuByIds(ids));
+    }
+
+    /**
+     * 减库存
+     * @param cartMap 商品id及数量的map
+     */
+    @PutMapping("/stock/minus")
+    public ResponseEntity<Void> minusStock(@RequestBody Map<Long, Integer> cartMap){
+        goodsService.minusStock(cartMap);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

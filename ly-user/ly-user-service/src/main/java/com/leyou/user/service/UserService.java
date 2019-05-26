@@ -5,7 +5,7 @@ import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exceptions.LyException;
 import com.leyou.common.utils.BeanHelper;
 import com.leyou.common.utils.RegexUtils;
-import com.leyou.item.dto.UserDTO;
+import com.leyou.user.dto.UserDTO;
 import com.leyou.user.entity.User;
 import com.leyou.user.mapper.UserMapper;
 import org.apache.commons.lang3.RandomStringUtils;

@@ -1,23 +1,13 @@
-package com.leyou.order.entity;
+package com.leyou.order.vo;
 
 import lombok.Data;
 
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.Date;
-
 /**
  * @Author: 姜光明
- * @Date: 2019/5/20 22:15
- * 物流表
+ * @Date: 2019/5/26 14:29
  */
 @Data
-@Table(name = "tb_order_logistics")
-public class OrderLogistics {
-    /**
-     * 订单id，与订单表一对一
-     */
-    @Id
+public class OrderLogisticsVO {
     private Long orderId;
     /**
      * 物流单号
@@ -55,6 +45,4 @@ public class OrderLogistics {
      * 邮编
      */
     private String postcode;
-    private Date createTime;
-    private Date updateTime;
 }

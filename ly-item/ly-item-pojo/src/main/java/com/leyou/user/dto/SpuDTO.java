@@ -1,4 +1,4 @@
-package com.leyou.item.dto;
+package com.leyou.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.leyou.item.dto;
+package com.leyou.user.dto;
 
 import lombok.Data;
 

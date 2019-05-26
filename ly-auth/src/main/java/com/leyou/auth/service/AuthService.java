@@ -7,7 +7,7 @@ import com.leyou.common.auth.utils.JwtUtils;
 import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exceptions.LyException;
 import com.leyou.common.utils.CookieUtils;
-import com.leyou.item.dto.UserDTO;
+import com.leyou.user.dto.UserDTO;
 import com.leyou.privilege.client.ApplicationClient;
 import com.leyou.privilege.dto.ApplicationDTO;
 import com.leyou.user.client.UserClient;

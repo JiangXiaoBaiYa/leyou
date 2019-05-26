@@ -1,14 +1,13 @@
 package com.leyou.item;
 
 import com.leyou.common.vo.PageResult;
-import com.leyou.item.dto.*;
+
+import com.leyou.user.dto.*;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: 姜光明
@@ -68,7 +67,7 @@ public interface ItemClient {
      */
     @GetMapping("spec/params")
     List<SpecParamDTO> querySpecParamsList(@RequestParam(value = "gid", required = false) Long gid,
-                                                                  @RequestParam(value = "cid", required = false) Long cid,
+                                           @RequestParam(value = "cid", required = false) Long cid,
                                            @RequestParam(value = "searching", required = false) Boolean searching);
 
     /**
@@ -98,4 +97,21 @@ public interface ItemClient {
      */
     @GetMapping("spec/of/category")
     List<SpecGroupDTO> querySpecsByCid(@RequestParam("id") Long id);
+
+
+    /**
+     * 根据id批量查询sku
+     *
+     * @param ids skuId的集合
+     * @return sku的集合
+     */
+    @GetMapping("sku/list")
+    List<SkuDTO> querySkuByIds(@RequestParam("ids") List<Long> ids);
+
+    /**
+     * 减库存
+     * @param cartMap 商品id及数量的map
+     */
+    @PutMapping("/stock/minus")
+    void minusStock(@RequestBody Map<Long, Integer> cartMap);
 }

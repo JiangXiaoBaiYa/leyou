@@ -21,3 +21,9 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
   type-aliases-package: com.leyou.order.entity
+  mapper-locations: mappers/*.xml
+
+ly:
+  worker:
+    workerId: 1
+    dataCenterId: 1

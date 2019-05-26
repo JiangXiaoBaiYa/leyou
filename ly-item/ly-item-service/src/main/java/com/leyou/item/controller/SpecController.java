@@ -2,9 +2,8 @@ package com.leyou.item.controller;
 
 import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exceptions.LyException;
-import com.leyou.item.dto.CategoryDTO;
-import com.leyou.item.dto.SpecGroupDTO;
-import com.leyou.item.dto.SpecParamDTO;
+import com.leyou.user.dto.SpecGroupDTO;
+import com.leyou.user.dto.SpecParamDTO;
 import com.leyou.item.entity.SpecGroup;
 import com.leyou.item.service.SpecService;
 import org.springframework.beans.factory.annotation.Autowired;

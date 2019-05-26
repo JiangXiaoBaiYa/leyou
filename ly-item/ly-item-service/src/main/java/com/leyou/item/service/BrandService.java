@@ -6,7 +6,7 @@ import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exceptions.LyException;
 import com.leyou.common.utils.BeanHelper;
 import com.leyou.common.vo.PageResult;
-import com.leyou.item.dto.BrandDTO;
+import com.leyou.user.dto.BrandDTO;
 import com.leyou.item.entity.Brand;
 import com.leyou.item.mapper.BrandMapper;
 import org.apache.commons.lang3.StringUtils;

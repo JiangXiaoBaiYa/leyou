@@ -3,8 +3,8 @@ package com.leyou.item.service;
 import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exceptions.LyException;
 import com.leyou.common.utils.BeanHelper;
-import com.leyou.item.dto.SpecGroupDTO;
-import com.leyou.item.dto.SpecParamDTO;
+import com.leyou.user.dto.SpecGroupDTO;
+import com.leyou.user.dto.SpecParamDTO;
 import com.leyou.item.entity.SpecGroup;
 import com.leyou.item.entity.SpecParam;
 import com.leyou.item.mapper.SpecGroupMapper;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

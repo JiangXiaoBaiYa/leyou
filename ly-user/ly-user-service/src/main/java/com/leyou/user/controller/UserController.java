@@ -1,11 +1,10 @@
 package com.leyou.user.controller;
 
 import com.leyou.common.exceptions.LyException;
-import com.leyou.item.dto.UserDTO;
+import com.leyou.user.dto.UserDTO;
 import com.leyou.user.entity.User;
 import com.leyou.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.bind.BindResult;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;

@@ -1,6 +1,6 @@
 package com.leyou.item.controller;
 
-import com.leyou.item.dto.CategoryDTO;
+import com.leyou.user.dto.CategoryDTO;
 import com.leyou.item.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

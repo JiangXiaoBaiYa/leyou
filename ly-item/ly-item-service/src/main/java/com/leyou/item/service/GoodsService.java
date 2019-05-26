@@ -7,9 +7,9 @@ import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exceptions.LyException;
 import com.leyou.common.utils.BeanHelper;
 import com.leyou.common.vo.PageResult;
-import com.leyou.item.dto.SkuDTO;
-import com.leyou.item.dto.SpuDTO;
-import com.leyou.item.dto.SpuDetailDTO;
+import com.leyou.user.dto.SkuDTO;
+import com.leyou.user.dto.SpuDTO;
+import com.leyou.user.dto.SpuDetailDTO;
 import com.leyou.item.entity.*;
 import com.leyou.item.mapper.*;
 import org.apache.commons.lang.text.StrBuilder;
@@ -22,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: 姜光明
@@ -315,5 +316,23 @@ public class GoodsService {
             throw new LyException(ExceptionEnum.GOODS_NOT_FOUND);
         }
         return BeanHelper.copyWithCollection(skus,SkuDTO.class);
+    }
+
+    /**
+     * 减库存
+     *
+     * @param cartMap
+     */
+    @Transactional
+    public void minusStock(Map<Long, Integer> cartMap) {
+
+        for (Map.Entry<Long, Integer> entry : cartMap.entrySet()) {
+            Long skuId = entry.getKey();
+            Integer num = entry.getValue();
+            int count = skuMapper.minusStock(skuId, num);
+            if (count != 1) {
+                throw new RuntimeException("库存不足");
+            }
+        }
     }
 }
